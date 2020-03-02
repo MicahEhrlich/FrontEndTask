@@ -1,61 +1,19 @@
-import data from './data.json';
+import fetch from 'isomorphic-unfetch';
+import Places from '../component/Results';
 
-const Index = () => {
+const Index = ({ results }) => {
   return (
     <div>
-      <div className='flex-container'>
-        {data.results.map((element, index) => (
-          <div className='result'>
-            <img src={element.main_photo_url} />
-            <h3>{element.name}</h3>
-            <h4>{element.address}</h4>
-            {JSON.parse(element.tags).map((tag, index) => (
-              <h5 id='tag'>{tag} </h5>
-            ))}
-          </div>
-        ))}
-      </div>
-      <style jsx>{`
-        .flex-container {
-          display: flex;
-          flex-wrap: wrap;
-        }
-        .flex-container > div {
-          display: inline-block;
-          margin: 8px;
-          font-family: Helvetica, sans-serif;
-        }
-        .result {
-          width: 420px;
-          height: 370px;
-          border: 1px groove;
-          padding: 10px 15px;
-          background: #e6e6e6;
-          border-color: #d9d9d9;
-        }
-        #tag {
-          margin-right: 0.8em;
-          margin-top: 0.5em;
-          margin-bottom: 0.05em;
-          display: inline-block;
-          background: #008fb3;
-          border: 1px groove;
-          border-color: #008ff1;
-          border-radius: 2px;
-          color: white;
-          padding: 2px 5px;
-        }
-        img {
-          width: 100%;
-          margin-bottom: 0.05em;
-        }
-        h4 {
-          color: Gray;
-          margin-bottom: 0.05em;
-        }
-      `}</style>
+      <Places results={results} />
     </div>
   );
+};
+
+Index.getInitialProps = async () => {
+  const res = await fetch('http://localhost:3000/api/places');
+  const json = await res.json();
+
+  return { results: json.results };
 };
 
 export default Index;
